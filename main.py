@@ -62,8 +62,8 @@ class Reversi:
                 # End the game
                 self.stdscr.getch()
                 return
-            key = self.stdscr.getch()
 
+            key = self.stdscr.getch()
             if key == curses.KEY_LEFT and self.highlight[1] != 0:
                 # move highlight to the left
                 self.highlight[1] -= 1
