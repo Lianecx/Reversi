@@ -45,7 +45,7 @@ class Reversi:
         for i in range(self.size):
             self.stdscr.addstr(f'{i} ')
             for j in range(self.size):
-                color = curses.color_pair(1) | curses.A_BOLD if self.highlight == [i, j] else curses.A_NORMAL
+                color = curses.color_pair(1) | curses.A_REVERSE if self.highlight == [i, j] else curses.A_NORMAL
                 if self.field[i][j] == 1:
                     self.stdscr.addstr('X', color)
                 elif self.field[i][j] == 2:
@@ -58,7 +58,10 @@ class Reversi:
 
     def start_game(self):
         while True:
-            self.check_end()
+            if self.check_end():
+                # End the game
+                self.stdscr.getch()
+                return
             key = self.stdscr.getch()
 
             if key == curses.KEY_LEFT and self.highlight[1] != 0:
@@ -145,10 +148,10 @@ class Reversi:
             for j in range(self.size):
                 # Check if there are still valid moves
                 if self.can_place(i, j):
-                    return
+                    return False
                 # Check if the field is full
                 elif self.field[i][j] is None:
-                    return
+                    return False
                 # Count the stones
                 elif self.field[i][j] == 1:
                     player1 += 1
@@ -157,7 +160,7 @@ class Reversi:
         self.stdscr.addstr(4, 30, f'Player 1: {player1} stones')
         self.stdscr.addstr(8, 30, f'Player 2: {player2} stones')
         self.stdscr.addstr(16, 0, 'Press any key to exit...')
-        self.stdscr.getch()
+        return True
 
 
 def main(stdscr):
