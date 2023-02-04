@@ -1,6 +1,6 @@
-from curses import wrapper
 import curses
 import math
+from curses import wrapper
 
 MOVE_KEYS = [curses.KEY_LEFT, curses.KEY_RIGHT, curses.KEY_UP, curses.KEY_DOWN]
 
@@ -26,9 +26,6 @@ class Reversi:
         self.highlight = [middle_x, middle_y]
 
         self.player = 1
-
-        self.render()
-        self.start_game()
 
     # The following function draws the gamegrid on the terminal.
     def render(self):
@@ -57,6 +54,7 @@ class Reversi:
         self.stdscr.refresh()
 
     def start_game(self):
+        self.render()
         while True:
             if self.check_end():
                 # End the game
@@ -162,10 +160,28 @@ class Reversi:
         self.stdscr.addstr(16, 0, 'Press any key to exit...')
         return True
 
+    def get_stats(self):
+        player1 = 0
+        player2 = 0
+        for i in range(self.size):
+            for j in range(self.size):
+                if self.field[i][j] == 1:
+                    player1 += 1
+                elif self.field[i][j] == 2:
+                    player2 += 1
+
+        return player1, player2
+
 
 def main(stdscr):
-    stdscr.clear()
-    Reversi(10, stdscr)
+    game = Reversi(10, stdscr)
+    try:
+        game.start_game()
+    except KeyboardInterrupt:
+        stats = game.get_stats()
+        print('Final stats:')
+        print(f'Player 1: {stats[0]} stones')
+        print(f'Player 2: {stats[1]} stones')
 
 
 wrapper(main)
